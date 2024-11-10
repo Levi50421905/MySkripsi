@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySkripsi - Login & Register</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="btn">
+            <button class="login">Masuk</button>
+            <button class="signup">Daftar</button>
+            <div class="slider"></div>
+        </div>
+
+        <div class="form-section">
+            <div class="login-box">
+                <h2>My Skripsi</h2>
+                <form id="loginForm">
+                    <input type="email" name="email" class="ele" placeholder="Email" required>
+                    <input type="password" name="password" class="ele" placeholder="Password" required>
+                    <select name="role" class="ele" required>
+                        <option value="">Pilih Peran</option>
+                        <option value="mahasiswa">Mahasiswa</option>
+                        <option value="dosen">Dosen</option>
+                    </select>
+                    <button type="submit" class="clkbtn">Masuk</button>
+                </form>
+            </div>
+
+            <div class="signup-box">
+                <h2>Daftar Pengguna</h2>
+                <form id="signupForm">
+                    <div class="form-error" id="signupError"></div>
+                    <input type="text" name="nama" class="ele" placeholder="Nama Lengkap" required>
+                    <input type="email" name="email" class="ele" placeholder="Email" required>
+                    <input type="password" name="password" class="ele" placeholder="Password" required minlength="6">
+                    <input type="text" name="nim_nidn" class="ele" placeholder="NIM/NIDN" required>
+                    <select name="role" class="ele" required>
+                        <option value="">Pilih Peran</option>
+                        <option value="mahasiswa">Mahasiswa</option>
+                        <option value="dosen">Dosen</option>
+                    </select>
+                    <button type="submit" class="clkbtn">Daftar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="../js/script.js"></script>
+</body>
+</html>

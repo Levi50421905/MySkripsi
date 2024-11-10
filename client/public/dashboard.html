@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySkripsi - Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>MySkripsi</h2>
+                <p id="userRole"></p>
+            </div>
+            <ul class="nav-links">
+                <li class="mahasiswa-only"><a href="#" data-page="pengajuan"><i class="fas fa-file-alt"></i> Pengajuan Skripsi</a></li>
+                <li class="mahasiswa-only"><a href="#" data-page="progress"><i class="fas fa-tasks"></i> Progress Skripsi</a></li>
+                <li class="dosen-only"><a href="#" data-page="bimbingan"><i class="fas fa-users"></i> Mahasiswa Bimbingan</a></li>
+                <li><a href="#" data-page="jadwal"><i class="fas fa-calendar-alt"></i> Jadwal Bimbingan</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <!-- Pengajuan Skripsi Section -->
+            <section id="pengajuan" class="page mahasiswa-only">
+                <h2>Pengajuan Skripsi</h2>
+                <form id="skripsiForm" class="skripsi-form">
+                    <div class="form-group">
+                        <label for="judul">Judul Skripsi</label>
+                        <input type="text" id="judul" name="judul" required class="form-control">
+                    </div>
+                
+                    
+<div class="form-group">
+    <label for="pembimbing">Dosen Pembimbing</label>
+    <select id="pembimbing" name="pembimbing" class="form-control" required>
+        <option value="">Pilih Dosen Pembimbing</option>
+    </select>
+</div>
+                
+                    <div class="form-group">
+                        <label for="abstrak">Abstrak</label>
+                        <textarea id="abstrak" name="abstrak" required class="form-control"></textarea>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="dokumen">Upload Dokumen (PDF maks 2MB)</label>
+                        <input type="file" id="dokumen" name="dokumen" accept=".pdf" class="form-control">
+                        <small class="text-muted">Hanya file PDF yang diperbolehkan.</small>
+                    </div>
+                
+                    <button type="submit" class="clkbtn btn-primary">Submit</button>
+                </form>
+            </section>
+
+            <!-- Progress Skripsi Section -->
+            <section id="progress" class="page mahasiswa-only">
+                <h2>Progress Skripsi</h2>
+                <div class="progress-container">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </section>
+
+            <!-- Mahasiswa Bimbingan Section -->
+<section id="bimbingan" class="page dosen-only">
+    <h2>Daftar Mahasiswa Bimbingan</h2>
+    <div class="bimbingan-list">
+        <!-- Daftar mahasiswa bimbingan akan diisi secara dinamis -->
+    </div>
+</section>
+
+            <!-- Jadwal Bimbingan Section -->
+            <section id="jadwal" class="page">
+                <h2>Jadwal Bimbingan</h2>
+                <div class="jadwal-container">
+                    <div id="calendar"></div>
+                    <div id="jadwalList">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div id="scheduleBimbinganModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Jadwalkan Bimbingan</h2>
+            <form id="scheduleBimbinganForm">
+                <div class="form-group">
+                    <label for="bimbinganDate">Tanggal Bimbingan</label>
+                    <input type="datetime-local" id="bimbinganDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="bimbinganNotes">Catatan Bimbingan</label>
+                    <textarea id="bimbinganNotes" required></textarea>
+                </div>
+                <button type="submit">Jadwalkan Bimbingan</button>
+            </form>
+        </div>
+    </div>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
