@@ -1,5 +1,6 @@
 Dokumentasi Aplikasi MySkripsi
 
+(README Rekomendasi Dibuka dalam Code jangan di Preview)
 Deskripsi Umum
 Aplikasi Skripsi adalah platform yang memungkinkan mahasiswa untuk mengajukan skripsi dan menjadwalkan bimbingan dengan dosen. 
 Aplikasi ini memiliki dua peran utama: mahasiswa dan dosen, yang masing-masing memiliki akses dan fungsionalitas yang berbeda.
