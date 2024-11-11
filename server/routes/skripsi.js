@@ -46,7 +46,7 @@ router.get('/', auth, async (req, res) => {
         res.json(skripsi || {}); 
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: 'Server Error', detail: err.message });
     }
   });
 

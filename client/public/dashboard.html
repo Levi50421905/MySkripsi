@@ -35,8 +35,8 @@
                 
                     
 <div class="form-group">
-    <label for="pembimbing">Dosen Pembimbing</label>
-    <select id="pembimbing" name="pembimbing" class="form-control" required>
+    <label for="dosen_id">Dosen Pembimbing</label>
+    <select name="dosen_id" id="dosen_id" required>
         <option value="">Pilih Dosen Pembimbing</option>
     </select>
 </div>
@@ -65,12 +65,12 @@
             </section>
 
             <!-- Mahasiswa Bimbingan Section -->
-<section id="bimbingan" class="page dosen-only">
-    <h2>Daftar Mahasiswa Bimbingan</h2>
-    <div class="bimbingan-list">
-        <!-- Daftar mahasiswa bimbingan akan diisi secara dinamis -->
-    </div>
-</section>
+            <section id="bimbingan" class="page dosen-only">
+                <h2>Daftar Mahasiswa Bimbingan</h2>
+                <div class="bimbingan-list">
+                    <!-- Daftar mahasiswa bimbingan akan diisi secara dinamis -->
+                 </div>
+            </section>
 
             <!-- Jadwal Bimbingan Section -->
             <section id="jadwal" class="page">
@@ -86,18 +86,14 @@
     </div>
     <div id="scheduleBimbinganModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close" onclick="closeModal('scheduleBimbinganModal')">&times;</span>
             <h2>Jadwalkan Bimbingan</h2>
             <form id="scheduleBimbinganForm">
-                <div class="form-group">
-                    <label for="bimbinganDate">Tanggal Bimbingan</label>
-                    <input type="datetime-local" id="bimbinganDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="bimbinganNotes">Catatan Bimbingan</label>
-                    <textarea id="bimbinganNotes" required></textarea>
-                </div>
-                <button type="submit">Jadwalkan Bimbingan</button>
+                <label for="bimbinganDate">Tanggal:</label>
+                <input type="date" id="bimbinganDate" required>
+                <label for="bimbinganNotes">Catatan:</label>
+                <input type="text" id="bimbinganNotes" name="catatan" required>
+                <button type="submit">Jadwalkan</button>
             </form>
         </div>
     </div>

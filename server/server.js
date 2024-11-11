@@ -5,15 +5,9 @@ const connectDB = require('./config/db');
 const Bimbingan = require('./models/Bimbingan'); 
 require('dotenv').config();
 
+
 const app = express();
-app.get('/bimbingan', async (req, res) => {
-    try {
-        const bimbinganData = await Bimbingan.find(); // Ambil semua data bimbingan
-        res.json(bimbinganData);
-    } catch (error) {
-        res.status(500).json({ message: 'Gagal mengambil data bimbingan' });
-    }
-});
+
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-auth-token');
@@ -32,6 +26,10 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
+app.use(cors({
+    origin: ['http://127.0.0.1:5500', 'http://localhost:5500'], // Tambahkan alamat lain jika diperlukan
+    credentials: true
+}));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/skripsi', require('./routes/skripsi'));

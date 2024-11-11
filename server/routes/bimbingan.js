@@ -6,6 +6,16 @@ const Bimbingan = require('../models/Bimbingan');
 
 const { check, validationResult } = require('express-validator');
 
+router.get('/', auth, async (req, res) => {
+  try {
+      const bimbingan = await Bimbingan.find().populate('skripsi_id'); // Atau sesuaikan dengan model Anda
+      res.json(bimbingan);
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+  }
+});
+
 // Get all bimbingan for a skripsi
 router.get('/skripsi/:skripsiId', auth, async (req, res) => {
   try {
@@ -22,10 +32,8 @@ router.get('/skripsi/:skripsiId', auth, async (req, res) => {
 router.post('/', [
   auth,
   [
-      check('skripsi', 'ID Skripsi wajib diisi').not().isEmpty(),
       check('catatan', 'Catatan wajib diisi').not().isEmpty(),
       check('tanggal', 'Tanggal wajib diisi').not().isEmpty()
-     
   ]
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -45,7 +53,7 @@ router.post('/', [
       }
 
       const newBimbingan = new Bimbingan({
-          skripsi,
+          skripsi_id,
           catatan,
           tanggal,
           lampiran_url

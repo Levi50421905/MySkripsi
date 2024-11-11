@@ -49,8 +49,8 @@ function validateForm(formData) {
         errors.push('NIM/NIDN wajib diisi');
     }
     
-    if (!formData.get('role')) {
-        errors.push('Peran wajib dipilih');
+    if (!formData.get('role') || !['mahasiswa', 'dosen'].includes(formData.get('role'))) {
+        errors.push('Peran wajib dipilih dan harus valid');
     }
     
     return errors;
@@ -60,13 +60,23 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     
+    console.log('Data yang akan dikirim:', {
+        email: formData.get('email'),
+        password: formData.get('password'),
+        role: formData.get('role')
+    });
+
     try {
         const response = await fetch('http://localhost:5000/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(Object.fromEntries(formData)),
+            body: JSON.stringify({
+                email: formData.get('email'),
+                password: formData.get('password'),
+                role: formData.get('role') // Pastikan role diambil dari form
+            }),
         });
 
         const data = await response.json();

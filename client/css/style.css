@@ -610,7 +610,13 @@ select.ele {
     gap: 1.5rem;
     padding: 1rem;
 }
-
+.bimbingan-list {
+    max-height: 400px; /* Atur tinggi maksimum sesuai kebutuhan */
+    overflow-y: auto;  /* Izinkan scroll vertikal */
+    border: 1px solid #ccc; /* Tambahkan border jika diinginkan */
+    padding: 10px; /* Tambahkan padding untuk estetika */
+    margin-top: 10px; /* Tambahkan margin atas untuk jarak */
+}
 /* Card untuk setiap mahasiswa bimbingan */
 .bimbingan-card {
     background-color: #ffffff;

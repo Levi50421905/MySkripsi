@@ -22,7 +22,8 @@ function openModal(modalId, skripsiId) {
 async function submitPengajuanSkripsi(event) {
     event.preventDefault();
 
-    const token = localStorage.getItem('token');
+    // Ambil token dari localStorage
+    const token = localStorage.getItem('token'); // Pastikan token diambil di sini
     if (!token) {
         showAlert('Anda harus login terlebih dahulu', 'error');
         return;
@@ -33,7 +34,7 @@ async function submitPengajuanSkripsi(event) {
         const response = await fetch(`${API_BASE_URL}/skripsi`, {
             method: 'POST',
             headers: {
-                'x-auth-token': token
+                'x-auth-token': token // Menggunakan token yang diambil
             },
             body: formData
         });
@@ -66,18 +67,14 @@ async function loadDosenPembimbing() {
         }
 
         const users = await response.json();
-        // Filter hanya user dengan role dosen
         const dosenList = users.filter(user => user.role === 'dosen');
-        
-        const selectElement = document.querySelector('select[name="pembimbing"]');
+
+        const selectElement = document.getElementById('dosen_id'); // Pastikan ID sesuai
         if (selectElement) {
-            // Bersihkan opsi yang ada
             selectElement.innerHTML = '<option value="">Pilih Dosen Pembimbing</option>';
-            
-            // Tambahkan opsi dosen
             dosenList.forEach(dosen => {
                 const option = document.createElement('option');
-                option.value = dosen._id;
+                option.value = dosen._id; // Pastikan ini adalah ID dosen
                 option.textContent = dosen.nama;
                 selectElement.appendChild(option);
             });
@@ -105,7 +102,7 @@ async function loadDosenList() {
         updateDosenSelect(dosenList);
     } catch (error) {
         console.error('Error:', error);
-        showAlert('Gagal memuat daftar dosen', 'error');
+        showAlert('Gagal memuat daftar dosen: ' + error.message, 'error');
     }
 }
 
@@ -127,6 +124,10 @@ function updateDosenSelect(dosenList) {
 document.getElementById('skripsiForm').addEventListener('submit', submitPengajuanSkripsi);
 document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '/';
+        return;
+    }
     const userRole = localStorage.getItem('role');
 
     if (!token || !userRole) {
@@ -286,45 +287,48 @@ function updateBimbinganList(skripsiList) {
         return;
     }
 
-    bimbinganList.innerHTML = skripsiList.map(skripsi => `
-        <div class="bimbingan-card">
-            <div class="bimbingan-header">
-                <h3>${skripsi.mahasiswa_id.nama}</h3>
-                <span class="status ${skripsi.status}">${skripsi.status.toUpperCase()}</span>
-            </div>
-            <p>NIM: ${skripsi.mahasiswa_id.nim_nidn}</p>
-            <p>Judul: ${skripsi.judul}</p>
-             <div class="document-section">
-                <h4>Dokumen Terkait</h4>
-                ${skripsi.dokumen_url ? 
-                    `<a href="${skripsi.dokumen_url}" target="_blank" class="btn-document">
-                        <i class="fas fa-file-pdf"></i> Lihat Dokumen
-                    </a>` : 
-                    '<p>Belum ada dokumen</p>'
-                }
-            </div>
-            <div class="bimbingan-actions">
-             <div class="form-group">
-                    <label for="catatan-${skripsi._id}">Catatan</label>
-                    <input type="text" id="catatan-${skripsi._id}" placeholder="Catatan" required>
+    bimbinganList.innerHTML = skripsiList.map(skripsi => {
+        const mahasiswaName = skripsi.mahasiswa_id ? skripsi.mahasiswa_id.nama : 'Nama tidak tersedia';
+        return `
+            <div class="bimbingan-card">
+                <div class="bimbingan-header">
+                    <h3>${mahasiswaName}</h3>
+                    <span class="status ${skripsi.status}">${skripsi.status.toUpperCase()}</span>
                 </div>
-                <select id="status-${skripsi._id}" class="status-select">
-                    <option value="draft">Draft</option>
-                    <option value="pengajuan">Pengajuan</option>
-                    <option value="revisi">Revisi</option>
-                    <option value="diterima">Diterima</option>
-                    <option value="selesai">Selesai</option>
-                </select>
-                <button onclick="updateStatus('${skripsi._id}')" class="btn-action">
-                    Update Status
-                </button>
-                <input type="date" id="tanggal-${skripsi._id}" class="date-input" />
-                <button onclick="jadwalkanBimbingan('${skripsi._id}')" class="btn-action">
-                    Jadwalkan Bimbingan
-                </button>
+                <p>NIM: ${skripsi.mahasiswa_id ? skripsi.mahasiswa_id.nim_nidn : 'NIM tidak tersedia'}</p>
+                <p>Judul: ${skripsi.judul}</p>
+                <div class="document-section">
+                    <h4>Dokumen Terkait</h4>
+                    ${skripsi.dokumen_url ? 
+                        `<a href="${skripsi.dokumen_url}" target="_blank" class="btn-document">
+                            <i class="fas fa-file-pdf"></i> Lihat Dokumen
+                        </a>` : 
+                        '<p>Belum ada dokumen</p>'
+                    }
+                </div>
+                <div class="bimbingan-actions">
+                    <div class="form-group">
+                        <label for="catatan-${skripsi._id}">Catatan</label>
+                        <input type="text" id="catatan-${skripsi._id}" placeholder="Catatan" required>
+                    </div>
+                    <select id="status-${skripsi._id}" class="status-select">
+                        <option value="draft">Draft</option>
+                        <option value="pengajuan">Pengajuan</option>
+                        <option value="revisi">Revisi</option>
+                        <option value="diterima">Diterima</option>
+                        <option value="selesai">Selesai</option>
+                    </select>
+                    <button onclick="updateStatus('${skripsi._id}')" class="btn-action">
+                        Update Status
+                    </button>
+                    <input type="date" id="tanggal-${skripsi._id}" class="date-input" />
+                    <button onclick="jadwalkanBimbingan('${skripsi._id}')" class="btn-action">
+                        Jadwalkan Bimbingan
+                    </button>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 async function updateStatus(skripsiId) {
@@ -355,12 +359,13 @@ async function updateStatus(skripsiId) {
 }
 
 async function jadwalkanBimbingan(skripsiId) {
+    const catatan = document.getElementById(`catatan-${skripsiId}`).value;
     const tanggal = document.getElementById(`tanggal-${skripsiId}`).value;
-    const catatan = document.querySelector(`input[name="catatan"]`).value; // Ambil nilai catatan dari input
+    
 
     // Validasi input
     if (!tanggal || !catatan) {
-        showAlert('Tanggal, dan catatan harus diisi', 'error');
+        showAlert('Tanggal dan catatan harus diisi', 'error');
         return;
     }
 
@@ -373,10 +378,10 @@ async function jadwalkanBimbingan(skripsiId) {
                 'x-auth-token': token
             },
             body: JSON.stringify({
-                skripsi: skripsiId,
-                tanggal: new Date(tanggal),
+                skripsi_id: skripsiId, // Ubah 'skripsi' menjadi 'skripsi_id'
+                tanggal: new Date(tanggal).toISOString(), // Pastikan format tanggal benar
                 catatan: catatan,
-                
+                lampiran_url: undefined // Jika Anda tidak mengirim lampiran, Anda bisa menghilangkan ini
             })
         });
 
@@ -389,7 +394,7 @@ async function jadwalkanBimbingan(skripsiId) {
         loadDosenData();
     } catch (error) {
         console.error('Error:', error);
-        showAlert(`Gagal menjadwalkan bimbingan: ${error.message}`, 'error');
+        showAlert('Gagal menjadwalkan bimbingan: ' + error.message, 'error');
     }
 }
 
@@ -399,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadBimbinganData() {
     try {
-        const token = localStorage.getItem('token'); // Ambil token dari local storage
+        const token = localStorage.getItem('token');
         const response = await fetch(`${API_BASE_URL}/bimbingan`, {
             method: 'GET',
             headers: {
@@ -413,7 +418,8 @@ async function loadBimbinganData() {
         }
 
         const bimbinganData = await response.json();
-        updateBimbinganList(bimbinganData); // Panggil fungsi untuk memperbarui tampilan
+        console.log('Bimbingan Data:', bimbinganData); // Tambahkan log ini
+        updateBimbinganList(bimbinganData);
     } catch (error) {
         console.error('Error:', error);
         showAlert('Gagal memuat data bimbingan: ' + error.message, 'error');
@@ -428,7 +434,6 @@ document.getElementById('scheduleBimbinganForm').addEventListener('submit', asyn
     const skripsiId = modal.getAttribute('data-skripsi-id');
     const tanggal = document.getElementById('bimbinganDate').value;
     const catatan = document.getElementById('bimbinganNotes').value;
-    const lokasi = document.getElementById('bimbinganLocation').value;
 
     try {
         const token = localStorage.getItem('token');
@@ -439,10 +444,9 @@ document.getElementById('scheduleBimbinganForm').addEventListener('submit', asyn
                 'x-auth-token': token
             },
             body: JSON.stringify({
-                skripsi_id: skripsiId,
-                tanggal: tanggal,
-                catatan: catatan,
-                lokasi: lokasi
+                skripsi_id: skripsiId, // Pastikan ini ada dan valid
+                tanggal: new Date(tanggal), // Pastikan format tanggal benar
+                catatan: catatan
             })
         });
 

@@ -64,14 +64,15 @@ router.post('/signup', async (req, res) => {
         );
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
+        res.status(500).json({ message: 'Server Error', detail: err.message });
     }
 });
 
-// Login user
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role } = req.body;
+
+        console.log('Data yang diterima:', { email, password, role }); // Log data yang diterima
 
         let user = await User.findOne({ email });
         if (!user) {
@@ -81,6 +82,12 @@ router.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Email atau password salah' });
+        }
+
+        // Validasi role
+        console.log('Role pengguna dari database:', user.role); // Log role pengguna dari database
+        if (user.role !== role) {
+            return res.status(400).json({ message: 'Peran tidak sesuai' });
         }
 
         const payload = {
