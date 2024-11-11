@@ -3,7 +3,6 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const Skripsi = require('../models/Skripsi');
 const Bimbingan = require('../models/Bimbingan');
-
 const { check, validationResult } = require('express-validator');
 
 router.get('/', auth, async (req, res) => {
@@ -33,22 +32,19 @@ router.post('/', [
   auth,
   [
       check('catatan', 'Catatan wajib diisi').not().isEmpty(),
-      check('tanggal', 'Tanggal wajib diisi').not().isEmpty()
+      check('tanggal', 'Tanggal wajib diisi').not().isEmpty(),
+      check('skripsi_id', 'ID Skripsi wajib diisi').not().isEmpty() // Pastikan ini ada
   ]
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-      console.log('Validation errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
   }
 
   try {
-      const { skripsi, tanggal, catatan, lampiran_url } = req.body;
-      console.log('Request data:', { skripsi, tanggal, catatan, lampiran_url });  // Log data yang dikirim
-
-      const skripsiDoc = await Skripsi.findById(skripsi);
+      const { skripsi_id, tanggal, catatan } = req.body; // Ambil skripsi_id dari body
+      const skripsiDoc = await Skripsi.findById(skripsi_id);
       if (!skripsiDoc) {
-          console.log('Skripsi not found with ID:', skripsi);
           return res.status(404).json({ message: 'Skripsi tidak ditemukan' });
       }
 
@@ -56,14 +52,12 @@ router.post('/', [
           skripsi_id,
           catatan,
           tanggal,
-          lampiran_url
       });
 
       const bimbingan = await newBimbingan.save();
-      console.log('New bimbingan saved:', bimbingan);  // Log hasil penyimpanan
       res.json(bimbingan);
   } catch (err) {
-      console.error('Server Error:', err.message);  // Log pesan kesalahan
+      console.error('Server Error:', err.message);
       res.status(500).send('Server Error');
   }
 });

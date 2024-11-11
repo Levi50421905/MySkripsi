@@ -1,26 +1,19 @@
 const mongoose = require('mongoose');
 
-const bimbinganSchema = new mongoose.Schema({
+const BimbinganSchema = new mongoose.Schema({
     skripsi_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Skripsi',
         required: true
     },
-    catatan: String,
-    status: {
+    catatan: {
         type: String,
-        enum: ['dijadwalkan', 'selesai', 'ditunda'],
-        default: 'dijadwalkan'
+        required: true
     },
     tanggal: {
         type: Date,
         required: true
-    },
-    lampiran_url: String,
-    createdAt: {
-        type: Date,
-        default: Date.now
     }
-});
+}, { timestamps: true });
 
-module.exports = mongoose.model('Bimbingan', bimbinganSchema);
+module.exports = mongoose.model('Bimbingan', BimbinganSchema);

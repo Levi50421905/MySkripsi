@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
         mahasiswaElements.forEach(el => el.style.display = 'none');
         dosenElements.forEach(el => el.style.display = 'block');
         loadDosenData();
-    }
+    } 
 
     // Navigation
     document.querySelectorAll('[page]').forEach(link => {
@@ -351,7 +351,7 @@ async function updateStatus(skripsiId) {
         }
 
         showAlert('Status berhasil diperbarui', 'success');
-        loadDosenData();
+        loadDosenData(); // Refresh data dosen
     } catch (error) {
         console.error('Error:', error);
         showAlert('Gagal memperbarui status: ' + error.message, 'error');
@@ -361,7 +361,6 @@ async function updateStatus(skripsiId) {
 async function jadwalkanBimbingan(skripsiId) {
     const catatan = document.getElementById(`catatan-${skripsiId}`).value;
     const tanggal = document.getElementById(`tanggal-${skripsiId}`).value;
-    
 
     // Validasi input
     if (!tanggal || !catatan) {
@@ -378,10 +377,9 @@ async function jadwalkanBimbingan(skripsiId) {
                 'x-auth-token': token
             },
             body: JSON.stringify({
-                skripsi_id: skripsiId, // Ubah 'skripsi' menjadi 'skripsi_id'
-                tanggal: new Date(tanggal).toISOString(), // Pastikan format tanggal benar
-                catatan: catatan,
-                lampiran_url: undefined // Jika Anda tidak mengirim lampiran, Anda bisa menghilangkan ini
+                skripsi_id: skripsiId, // Pastikan ini adalah ID skripsi yang valid
+                tanggal: new Date(tanggal).toISOString(),
+                catatan: catatan
             })
         });
 
@@ -391,7 +389,7 @@ async function jadwalkanBimbingan(skripsiId) {
         }
 
         showAlert('Bimbingan berhasil dijadwalkan', 'success');
-        loadDosenData();
+        loadDosenData(); // Refresh data bimbingan
     } catch (error) {
         console.error('Error:', error);
         showAlert('Gagal menjadwalkan bimbingan: ' + error.message, 'error');
