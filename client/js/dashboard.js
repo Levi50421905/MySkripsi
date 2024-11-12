@@ -574,11 +574,10 @@ async function loadMahasiswaJadwalBimbingan() {
         const userId = localStorage.getItem('user_id'); // Ambil user_id dari localStorage
 
         if (!userId) {
-            showAlert('User ID tidak ditemukan. Harap login ulang.', 'error');
+            showAlert('User  ID tidak ditemukan. Harap login ulang.', 'error');
             return;
         }
 
-        // Lakukan permintaan API hanya jika userId ditemukan
         const response = await fetch(`${API_BASE_URL}/bimbingan?mahasiswa_id=${userId}`, {
             method: 'GET',
             headers: {
@@ -592,11 +591,29 @@ async function loadMahasiswaJadwalBimbingan() {
         }
 
         const jadwalData = await response.json();
-        displayMahasiswaJadwalBimbingan(jadwalData);
+        displayMahasiswaJadwalBimbingan(jadwalData); // Pastikan fungsi ini didefinisikan
     } catch (error) {
         console.error('Error:', error);
         showAlert('Gagal memuat data jadwal bimbingan: ' + error.message, 'error');
     }
+}
+
+function displayMahasiswaJadwalBimbingan(jadwalData) {
+    const jadwalListContainer = document.getElementById('jadwalList');
+    if (!jadwalListContainer) return;
+
+    if (jadwalData.length === 0) {
+        jadwalListContainer.innerHTML = `<p>Anda belum memiliki jadwal bimbingan yang terjadwal.</p>`;
+        return;
+    }
+
+    jadwalListContainer.innerHTML = jadwalData.map(jadwal => `
+        <div class="jadwal-item">
+            <h3>${jadwal.skripsi_id?.judul || 'Judul tidak tersedia'}</h3>
+            <p>Tanggal: ${new Date(jadwal.tanggal).toLocaleDateString()}</p>
+            <p>Catatan: ${jadwal.catatan || 'Tidak ada catatan'}</p>
+        </div>
+    `).join('');
 }
 
 
