@@ -4,8 +4,6 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const Bimbingan = require('./models/Bimbingan'); 
 require('dotenv').config();
-
-
 const app = express();
 
 app.use((req, res, next) => {

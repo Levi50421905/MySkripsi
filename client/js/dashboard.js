@@ -1,23 +1,48 @@
 const API_BASE_URL = 'http://localhost:5000/api';
 
 // Fungsi untuk membuka modal dengan ID tertentu
-function openModal(modalId, skripsiId) {
+async function openModal(modalId, skripsiId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'block';
         modal.setAttribute('data-skripsi-id', skripsiId);
-        document.body.style.overflow = 'hidden'; // Mencegah scroll background
+        document.body.style.overflow = 'hidden';
 
-        // Reset form ketika modal dibuka
-        if (modalId === 'scheduleBimbinganModal') {
-            document.getElementById('scheduleBimbinganForm').reset();
-            
-            // Set tanggal minimum ke hari ini
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('bimbinganDate').setAttribute('min', today);
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/skripsi/${skripsiId}`, {
+                headers: {
+                    'x-auth-token': token,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Gagal mengambil data skripsi');
+            }
+
+            const skripsiData = await response.json();
+            document.getElementById('bimbinganAbstract').textContent = skripsiData.abstrak || 'Abstrak tidak tersedia';
+
+            if (skripsiData.dokumen_url) {
+                const pdfLinkContainer = document.getElementById('pdfLinkContainer');
+                pdfLinkContainer.innerHTML = `
+                    <a href="${skripsiData.dokumen_url}" target="_blank" class="btn-document">
+                        <i class="fas fa-file-pdf"></i> Lihat Dokumen
+                    </a>
+                `;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showAlert('Gagal memuat data skripsi: ' + error.message, 'error');
         }
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('bimbinganDate').setAttribute('min', today);
     }
-}   
+}
+
+
 //submit pengajuan
 async function submitPengajuanSkripsi(event) {
     event.preventDefault();
@@ -289,14 +314,16 @@ function updateBimbinganList(skripsiList) {
 
     bimbinganList.innerHTML = skripsiList.map(skripsi => {
         const mahasiswaName = skripsi.mahasiswa_id ? skripsi.mahasiswa_id.nama : 'Nama tidak tersedia';
+        const status = skripsi.status ? skripsi.status.toUpperCase() : 'TIDAK ADA STATUS'; // Validasi status
+        
         return `
             <div class="bimbingan-card">
                 <div class="bimbingan-header">
                     <h3>${mahasiswaName}</h3>
-                    <span class="status ${skripsi.status}">${skripsi.status.toUpperCase()}</span>
+                    <span class="status ${skripsi.status || 'unknown'}">${status}</span>
                 </div>
                 <p>NIM: ${skripsi.mahasiswa_id ? skripsi.mahasiswa_id.nim_nidn : 'NIM tidak tersedia'}</p>
-                <p>Judul: ${skripsi.judul}</p>
+                <p>Judul: ${skripsi.judul || 'Judul tidak tersedia'}</p>
                 <div class="document-section">
                     <h4>Dokumen Terkait</h4>
                     ${skripsi.dokumen_url ? 
@@ -330,6 +357,7 @@ function updateBimbinganList(skripsiList) {
         `;
     }).join('');
 }
+
 
 async function updateStatus(skripsiId) {
     const selectElement = document.getElementById(`status-${skripsiId}`);
@@ -387,7 +415,10 @@ async function jadwalkanBimbingan(skripsiId) {
             const errorData = await response.json();
             throw new Error(errorData.message || 'Gagal menjadwalkan bimbingan');
         }
-
+        if (!skripsiId) {
+            showAlert('Skripsi ID tidak ditemukan', 'error');
+            return;
+        }
         showAlert('Bimbingan berhasil dijadwalkan', 'success');
         loadDosenData(); // Refresh data bimbingan
     } catch (error) {
@@ -395,9 +426,22 @@ async function jadwalkanBimbingan(skripsiId) {
         showAlert('Gagal menjadwalkan bimbingan: ' + error.message, 'error');
     }
 }
+document.addEventListener('DOMContentLoaded', function() {
+    // Fungsi navigasi berdasarkan role user
+    const userRole = localStorage.getItem('role');
+    showPage(userRole === 'mahasiswa' ? 'pengajuan' : 'bimbingan');
 
+    document.querySelectorAll('[data-page]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pageId = link.getAttribute('data-page');
+            showPage(pageId);
+        });
+    });
+});
 document.addEventListener('DOMContentLoaded', function() {
     loadBimbinganData();
+    loadJadwalBimbingan();
 });
 
 async function loadBimbinganData() {
@@ -460,6 +504,48 @@ document.getElementById('scheduleBimbinganForm').addEventListener('submit', asyn
         showAlert('Gagal menjadwalkan bimbingan: ' + error.message, 'error');
     }
 });
+
+// Jadwal Bimbingan
+async function loadJadwalBimbingan() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/bimbingan`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Gagal mengambil data jadwal bimbingan');
+        }
+
+        const jadwalData = await response.json();
+        displayJadwalBimbingan(jadwalData);
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Gagal memuat data jadwal bimbingan: ' + error.message, 'error');
+    }
+}
+
+function displayJadwalBimbingan(jadwalData) {
+    const jadwalListContainer = document.getElementById('jadwalList');
+    if (!jadwalListContainer) return;
+
+    if (jadwalData.length === 0) {
+        jadwalListContainer.innerHTML = `<p>Tidak ada jadwal bimbingan yang tersedia.</p>`;
+        return;
+    }
+
+    jadwalListContainer.innerHTML = jadwalData.map(jadwal => `
+        <div class="jadwal-item">
+            <h3>${jadwal.skripsi_id?.judul || 'Judul tidak tersedia'}</h3>
+            <p>Tanggal: ${new Date(jadwal.tanggal).toLocaleDateString()}</p>
+            <p>Catatan: ${jadwal.catatan || 'Tidak ada catatan'}</p>
+        </div>
+    `).join('');
+}
 
 // Fungsi untuk menampilkan alert
 function showAlert(message, type = 'info') {
