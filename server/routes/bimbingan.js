@@ -5,26 +5,24 @@ const Skripsi = require('../models/Skripsi');
 const Bimbingan = require('../models/Bimbingan');
 const { check, validationResult } = require('express-validator');
 
+// Mengambil semua bimbingan untuk mahasiswa
 router.get('/', auth, async (req, res) => {
   try {
-      const bimbingan = await Bimbingan.find()
-          .populate('skripsi_id'); // Pastikan ini digunakan untuk mengambil data skripsi
+      const user = await User.findById(req.user.id);
+      let bimbingan;
+
+      if (user.role === 'mahasiswa') {
+          bimbingan = await Bimbingan.find({ mahasiswa_id: req.user.id })
+              .populate('skripsi_id'); // Pastikan ini ada
+      } else if (user.role === 'dosen') {
+          bimbingan = await Bimbingan.find()
+              .populate('skripsi_id'); // Pastikan ini ada
+      }
+
       res.json(bimbingan);
   } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');
-  }
-});
-
-// Get all bimbingan for a skripsi
-router.get('/skripsi/:skripsiId', auth, async (req, res) => {
-  try {
-    const bimbingan = await Bimbingan.find({ skripsi: req.params.skripsiId })
-      .sort({ tanggal: -1 });
-    res.json(bimbingan);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
   }
 });
 
