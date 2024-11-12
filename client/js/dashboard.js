@@ -429,7 +429,12 @@ async function jadwalkanBimbingan(skripsiId) {
 document.addEventListener('DOMContentLoaded', function() {
     // Fungsi navigasi berdasarkan role user
     const userRole = localStorage.getItem('role');
+
     showPage(userRole === 'mahasiswa' ? 'pengajuan' : 'bimbingan');
+
+
+    showPage(userRole === 'mahasiswa' ? 'pengajuan' : 'bimbingan');
+
 
 
     if (userRole === 'mahasiswa') {
@@ -561,6 +566,7 @@ function displayJadwalBimbingan(jadwalData) {
         </div>
     `).join('');
 }
+
 
 async function loadMahasiswaJadwalBimbingan() {
     try {
