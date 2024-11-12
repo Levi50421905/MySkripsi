@@ -7,7 +7,8 @@ const { check, validationResult } = require('express-validator');
 
 router.get('/', auth, async (req, res) => {
   try {
-      const bimbingan = await Bimbingan.find().populate('skripsi_id'); // Atau sesuaikan dengan model Anda
+      const bimbingan = await Bimbingan.find()
+          .populate('skripsi_id'); // Pastikan ini digunakan untuk mengambil data skripsi
       res.json(bimbingan);
   } catch (err) {
       console.error(err.message);
@@ -33,7 +34,7 @@ router.post('/', [
   [
       check('catatan', 'Catatan wajib diisi').not().isEmpty(),
       check('tanggal', 'Tanggal wajib diisi').not().isEmpty(),
-      check('skripsi_id', 'ID Skripsi wajib diisi').not().isEmpty() // Pastikan ini ada
+      check('skripsi_id', 'ID Skripsi wajib diisi').not().isEmpty()
   ]
 ], async (req, res) => {
   const errors = validationResult(req);
@@ -42,7 +43,9 @@ router.post('/', [
   }
 
   try {
-      const { skripsi_id, tanggal, catatan } = req.body; // Ambil skripsi_id dari body
+      const { skripsi_id, tanggal, catatan } = req.body;
+      const mahasiswaId = req.user.id; // Ambil mahasiswa_id dari token pengguna
+
       const skripsiDoc = await Skripsi.findById(skripsi_id);
       if (!skripsiDoc) {
           return res.status(404).json({ message: 'Skripsi tidak ditemukan' });
@@ -52,6 +55,7 @@ router.post('/', [
           skripsi_id,
           catatan,
           tanggal,
+          mahasiswa_id: mahasiswaId // Pastikan ini diisi dengan id mahasiswa yang valid
       });
 
       const bimbingan = await newBimbingan.save();
@@ -84,6 +88,16 @@ router.put('/:id/status', auth, async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
+  }
+});
+
+router.get('/mahasiswa/:mahasiswaId', auth, async (req, res) => {
+  try {
+      const bimbingan = await Bimbingan.find({ mahasiswa_id: req.params.mahasiswaId });
+      res.json(bimbingan);
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
   }
 });
 

@@ -52,14 +52,14 @@ router.post('/signup', async (req, res) => {
                 role: user.role
             }
         };
-
+        
         jwt.sign(
             payload,
             process.env.JWT_SECRET,
             { expiresIn: '24h' },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token, role: user.role });
+                res.json({ token, role: user.role, user: { id: user.id } }); // Tambahkan user.id di sini
             }
         );
     } catch (err) {
@@ -72,8 +72,6 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password, role } = req.body;
 
-        console.log('Data yang diterima:', { email, password, role }); // Log data yang diterima
-
         let user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: 'Email atau password salah' });
@@ -85,7 +83,6 @@ router.post('/login', async (req, res) => {
         }
 
         // Validasi role
-        console.log('Role pengguna dari database:', user.role); // Log role pengguna dari database
         if (user.role !== role) {
             return res.status(400).json({ message: 'Peran tidak sesuai' });
         }
@@ -103,7 +100,7 @@ router.post('/login', async (req, res) => {
             { expiresIn: '24h' },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token, role: user.role });
+                res.json({ token, role: user.role, user: { id: user.id } }); // Pastikan user.id ada di sini
             }
         );
     } catch (err) {

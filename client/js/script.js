@@ -59,12 +59,6 @@ function validateForm(formData) {
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    
-    console.log('Data yang akan dikirim:', {
-        email: formData.get('email'),
-        password: formData.get('password'),
-        role: formData.get('role')
-    });
 
     try {
         const response = await fetch('http://localhost:5000/api/auth/login', {
@@ -75,16 +69,22 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             body: JSON.stringify({
                 email: formData.get('email'),
                 password: formData.get('password'),
-                role: formData.get('role') // Pastikan role diambil dari form
+                role: formData.get('role')
             }),
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('role', data.role);
-            window.location.href = '/client/public/dashboard.html';
+            // Pastikan data.user ada sebelum mengakses id
+            if (data.user && data.user.id) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.role);
+                localStorage.setItem('user_id', data.user.id); // Simpan user ID
+                window.location.href = '/client/public/dashboard.html';
+            } else {
+                throw new Error('User  ID tidak ditemukan dalam respons.');
+            }
         } else {
             showError('login', data.message || 'Login gagal');
         }

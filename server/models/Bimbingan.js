@@ -13,6 +13,11 @@ const BimbinganSchema = new mongoose.Schema({
     tanggal: {
         type: Date,
         required: true
+    },
+    mahasiswa_id: {  // Tambahkan ini jika belum ada
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User ',
+        required: true
     }
 }, { timestamps: true });
 
