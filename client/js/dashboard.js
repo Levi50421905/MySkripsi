@@ -429,8 +429,17 @@ async function jadwalkanBimbingan(skripsiId) {
 document.addEventListener('DOMContentLoaded', function() {
     // Fungsi navigasi berdasarkan role user
     const userRole = localStorage.getItem('role');
+<<<<<<< HEAD
     showPage(userRole === 'mahasiswa' ? 'pengajuan' : 'bimbingan');
 
+=======
+
+    if (userRole === 'mahasiswa') {
+        loadMahasiswaJadwalBimbingan();
+    }
+    showPage(userRole === 'mahasiswa' ? 'pengajuan' : 'bimbingan');
+
+>>>>>>> 5d9b35d527012860baba4a5ab727346656c87f3e
     document.querySelectorAll('[data-page]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -547,6 +556,59 @@ function displayJadwalBimbingan(jadwalData) {
     `).join('');
 }
 
+<<<<<<< HEAD
+=======
+async function loadMahasiswaJadwalBimbingan() {
+    try {
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('user_id'); // Ambil user_id dari localStorage
+
+        if (!userId) {
+            showAlert('User ID tidak ditemukan. Harap login ulang.', 'error');
+            return;
+        }
+
+        // Lakukan permintaan API hanya jika userId ditemukan
+        const response = await fetch(`${API_BASE_URL}/bimbingan?mahasiswa_id=${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Gagal mengambil data jadwal bimbingan');
+        }
+
+        const jadwalData = await response.json();
+        displayMahasiswaJadwalBimbingan(jadwalData);
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Gagal memuat data jadwal bimbingan: ' + error.message, 'error');
+    }
+}
+
+
+function displayMahasiswaJadwalBimbingan(jadwalData) {
+    const jadwalListContainer = document.getElementById('jadwalList');
+    if (!jadwalListContainer) return;
+
+    if (jadwalData.length === 0) {
+        jadwalListContainer.innerHTML = `<p>Anda belum memiliki jadwal bimbingan yang terjadwal.</p>`;
+        return;
+    }
+
+    jadwalListContainer.innerHTML = jadwalData.map(jadwal => `
+        <div class="jadwal-item">
+            <h3>${jadwal.skripsi_id?.judul || 'Judul tidak tersedia'}</h3>
+            <p>Tanggal: ${new Date(jadwal.tanggal).toLocaleDateString()}</p>
+            <p>Catatan: ${jadwal.catatan || 'Tidak ada catatan'}</p>
+        </div>
+    `).join('');
+}
+
+>>>>>>> 5d9b35d527012860baba4a5ab727346656c87f3e
 // Fungsi untuk menampilkan alert
 function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');

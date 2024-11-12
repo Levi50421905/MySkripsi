@@ -916,6 +916,7 @@ select.ele {
 }
 
 /* Jadwal Bimbingan*/
+<<<<<<< HEAD
 .jadwal-item {
     background: #f9f9f9;
     border: 1px solid #ddd;
@@ -925,6 +926,19 @@ select.ele {
     box-shadow: var(--neu-shadow);
 }
 
+=======
+/* Styling untuk Jadwal Bimbingan Mahasiswa */
+.jadwal-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+
+>>>>>>> 5d9b35d527012860baba4a5ab727346656c87f3e
 .jadwal-item h3 {
     margin: 0;
     font-size: 1.1em;

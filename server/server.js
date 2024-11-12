@@ -13,6 +13,14 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/api/bimbingan', async (req, res) => {
+    const mahasiswaId = req.query.mahasiswa_id;
+    const jadwal = mahasiswaId
+        ? await JadwalBimbingan.find({ mahasiswa_id: mahasiswaId })
+        : await JadwalBimbingan.find();
+    res.json(jadwal);
+});
+
 // Connect Database
 connectDB();
 
