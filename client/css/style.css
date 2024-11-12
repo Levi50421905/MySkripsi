@@ -915,6 +915,120 @@ select.ele {
     transform: scale(1.02);
 }
 
+/* Jadwal Bimbingan*/
+/* Styling untuk Jadwal Bimbingan Mahasiswa */
+.jadwal-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+
+.jadwal-item h3 {
+    margin: 0;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.jadwal-item p {
+    margin: 5px 0;
+    color: #666;
+}
+/* Styling untuk Section Jadwal Bimbingan */
+#jadwal {
+    max-height: 80vh; /* Mengatur tinggi maksimum untuk section */
+    overflow-y: auto; /* Memungkinkan section untuk discroll secara vertikal */
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Judul dan Tampilan Section Jadwal */
+#jadwal h2 {
+    font-size: 1.8em;
+    font-weight: 600;
+    color: rgb(52, 73, 94);
+    margin-bottom: 20px;
+}
+
+/* Daftar Jadwal Bimbingan */
+.jadwal-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Item Individu dalam Daftar Jadwal */
+.jadwal-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.jadwal-item:hover {
+    transform: translateY(-3px);
+}
+
+.jadwal-item h3 {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.jadwal-item p {
+    font-size: 1em;
+    color: #555;
+    margin: 4px 0;
+}
+
+/* Custom Scrollbar Styling */
+#jadwal::-webkit-scrollbar {
+    width: 8px;
+}
+
+#jadwal::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+#jadwal::-webkit-scrollbar-thumb {
+    background: rgba(52, 152, 219, 0.8); /* Warna biru */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+#jadwal::-webkit-scrollbar-thumb:hover {
+    background: rgba(41, 128, 185, 1); /* Warna biru lebih gelap saat di-hover */
+}
+
+/* Responsive Design untuk Tampilan Mobile */
+@media (max-width: 768px) {
+    #jadwal {
+        max-height: 70vh; /* Sesuaikan tinggi maksimum untuk layar kecil */
+        padding: 15px;
+    }
+
+    #jadwal h2 {
+        font-size: 1.5em;
+    }
+
+    .jadwal-item h3 {
+        font-size: 1.1em;
+    }
+}
+
+
 /* Enhanced Modal */
 .modal {
     position: fixed;

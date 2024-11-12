@@ -4,8 +4,6 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const Bimbingan = require('./models/Bimbingan'); 
 require('dotenv').config();
-
-
 const app = express();
 
 app.use((req, res, next) => {
@@ -13,6 +11,14 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-auth-token');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
+});
+
+app.get('/api/bimbingan', async (req, res) => {
+    const mahasiswaId = req.query.mahasiswa_id;
+    const jadwal = mahasiswaId
+        ? await JadwalBimbingan.find({ mahasiswa_id: mahasiswaId })
+        : await JadwalBimbingan.find();
+    res.json(jadwal);
 });
 
 // Connect Database
